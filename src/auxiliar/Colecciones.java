@@ -121,7 +121,7 @@ public class Colecciones {
 	//que monstramos por pantalla siendo las columnas los 12 meses y las filas la isla correspondiente
 	//al final de la última columna y despues de diciembre tenemos una columna de totales que nos muestra
 	//la sumatoria de visistantes de todo el año para cada isla
-	public void mostrarVisitantesIslaMes(HashMap<Integer, ArrayList<Float>> listaVisitantes) {
+	public void mostrarVisitantesIslaMes1(HashMap<Integer, ArrayList<Float>> listaVisitantes) {
 		String[] meses = { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPT",
 				"OCTUBRE", "NOV", "DIC" };
 		String[] islas = { "GRAN CANARIA", "LANZAROTE", "FUERTEVENTURA", "TENERIFE", "LA PALMA", "LA GOMERA",
@@ -141,7 +141,7 @@ public class Colecciones {
 		System.out.print("\t" + "TOTAL");
 		System.out.println();
 		//He querido usar este bucle for each para hacer el método de otra forma y ver las posibilidades que hay de
-		//hacerlo recorriendo un Set en vez del propio HashMap.
+		//hacerlo recorriendo un Set en vez del propio HashMap. (El siguiente método más abajo uso for tradicional)
 		//con el método entrySet() aplicado al HashMap listaVisitantes, obtengo un Set de clave valor y cada uno de ellos
 		//va a estar en la variable visitasIslaYear.
 		for (Entry<Integer, ArrayList<Float>> visitasIslaYear : listaVisitantes.entrySet()) {
@@ -149,8 +149,19 @@ public class Colecciones {
 			//e incremetándola para que la siguiente vez que pasemos por aquí apunte a una isla nueva
 			System.out.print(islas[indiceIsla++]);
 			float subTotalPorIsla = 0.0f;
+			//Tener en cuenta que la variable visitasIslaYear almacena un conjunto de clave-valor, donde la clave son cada una 
+			//de las islas y el valor son un ArrayList de los meses, cada uno de los cuales almacen la cantidad de visitantes
+			//en forma de Float.
+			//cuando escribimos visitasIslaYear.getValue() en la condicion del for, es nos devuelve un ArrayList de uno de los vendedores
+			//y como en realidad todos son del mismo tamaño, ya que todos contienen 12 meses con la línea de código
+			//visitasIslaYear.getValue().size() obtenemos dicho tamaño, o sea 12 y es lo que recorrerá el bucle for.
+			//por supuesto podríamos haber puesto 12 directamente y hubiese funcionado, pero sólo para este caso
+			//si quisieramos aprovechar este código sin saber de antemano la longitud de ArrayList, de esta manera nos vale
+			//para otros casos.
 			for (Integer mes = 0; mes < visitasIslaYear.getValue().size(); mes++) {	
 				System.out.print("\t" + visitasIslaYear.getValue().get(mes).floatValue() + "");
+				//debemos restarle 1 al indiceIslas porque una líneas más arriba en el for anterior hemos incrementado
+				//el índice para que a la siguiente vuelta leyera la siguiente isla.
 				subTotalPorIsla += listaVisitantes.get(indiceIsla-1).get(mes);
 			}
 			totalAnual += subTotalPorIsla;
@@ -160,6 +171,44 @@ public class Colecciones {
 		System.out.println("..............................................................Total de Visitantes en todo el Archipielago:\t" + totalAnual);
 	}
 	
+	//Este método hace exáctamente los mismo que el anterior. La diferencia está que en la implementacion
+	//uso for tradicional, de manera que es algo más fácil de ver porque las variables de los for actúan de
+	//indices que aprovechamos para llamar a los arrays que tienen los nombres de las islas y los meses
+	//y ademas esos índices nos valen para extraer los datos del HashMap de entrada.
+	public void mostrarVisitantesIslaMes2(HashMap<Integer, ArrayList<Float>> listaVisitantes) {
+		String[] meses = { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPT",
+				"OCTUBRE", "NOV", "DIC" };
+		String[] islas = { "GRAN CANARIA", "LANZAROTE", "FUERTEVENTURA", "TENERIFE", "LA PALMA", "LA GOMERA",
+				"EL HIERRO" };
+		float totalAnual = 0;
+		float[] acumuladorVisitantesMes = new float[12];
+		System.out.print("\t");
+		for (String mes : meses) {
+			System.out.print("\t" + mes);
+		}
+		System.out.print("\t" + "TOTAL");
+		System.out.println();
+		for (int i = 0; i < islas.length; i++) {
+			System.out.print(islas[i]);
+			float subTotalPorIsla = 0.0f;
+			for (int j = 0; j < meses.length; j++) {
+				System.out.printf("\t%.2f" , listaVisitantes.get(i).get(j));
+				subTotalPorIsla += listaVisitantes.get(i).get(j);
+				acumuladorVisitantesMes[j] += listaVisitantes.get(i).get(j);
+			}
+			totalAnual += subTotalPorIsla;
+			System.out.printf("\t%.2f", subTotalPorIsla);
+			System.out.println("");
+
+		}
+		System.out.print("TOTAL: \t");
+
+		for (int j = 0; j < meses.length; j++) {
+			System.out.printf("\t%.2f" , acumuladorVisitantesMes[j]);
+		}
+		System.out.print("\t" + totalAnual);
+		
+	}
 	
 	//**************** VENTAS - VENDEDOR **************
 	
