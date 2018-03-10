@@ -405,4 +405,257 @@ public class Colecciones {
 	}
 	
 	
+	//*********************** COMUNIDADES AUTONOMAS ********************************
+	
+	
+	public String[] leerComunidadesAutonomasTxt() {
+		String[] comunidades = new String[19];
+		int index = 0;
+		try {
+			// Abrir el fichero
+			FileReader fr = new FileReader("ficheros/comunidades.txt");
+			BufferedReader br = new BufferedReader(fr);
+			String linea;
+			
+			// Leer el fichero linea a linea
+			while ((linea = br.readLine()) != null) {
+				comunidades[index] = linea.split("%")[1];
+				index++;
+			}
+			fr.close();//cierra el fichero
+			br.close();//cierra el buffer
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}return comunidades;
+	}
+	
+	
+	public String[] leerComunidadesAutonomasTxt2() {
+		String[] comunidades = new String[19];
+		int index = 0;
+		try {
+			// Abrir el fichero
+			FileReader fr = new FileReader("ficheros/comunidades.txt");
+			BufferedReader br = new BufferedReader(fr);
+			String linea;
+			// Leer el fichero linea a linea
+			linea = br.readLine();
+			//Este while sería con la condición tradicional sin usar una vaiarable dentro
+			//a la que asignamos el valor de la linea.
+			while (linea != null) {
+				comunidades[index] = linea.split("%")[1];
+				index++;
+				linea = br.readLine();
+			}
+			fr.close();//cierra el fichero
+			br.close();//cierra el buffer
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}return comunidades;
+	}
+	
+	
+	public String[] leerProvinciasTxt() {
+		String[] provincias = new String[52];
+		int index = 0;
+		try {
+			// Abrir el fichero
+			FileReader fr = new FileReader("ficheros/provincias.txt");
+			BufferedReader br = new BufferedReader(fr);
+			String linea;
+			
+			// Leer el fichero linea a linea
+			while ((linea = br.readLine()) != null) {
+				/*String provincia = strLine.split("%")[0];
+				String comunidadAutonomaDeLaProvincia = strLine.split("%")[1];
+				String habitantesDeLaProvincia = strLine.split("%")[2];
+				resultado[index] = provincia + "%" + comunidadAutonomaDeLaProvincia + "%" + habitantesDeLaProvincia;*/
+				provincias[index] = linea;
+				index++;
+			}
+			fr.close();//cierra el fichero
+			br.close();//cierra el buffer
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		return provincias;
+	}
+	
+	
+	public void mostrarDatosComAutonomasProvinciasHabitantes(HashMap<Integer,ArrayList<Integer>> habitantes, HashMap<Integer,ArrayList<String>> nombresProvincias, String[] nombreComunidadesAutonomas ) {
+		int subTotal = 0;
+		int total = 0;
+		System.out.println("***************************************************");
+		System.out.println("******Comunidades Autónomas y sus Provincias*******");
+		System.out.println("***************************************************");
+		for (int indexComunidad = 0; indexComunidad < habitantes.size(); indexComunidad++) {
+			System.out.println("----  " + nombreComunidadesAutonomas[indexComunidad] + "  ----");
+			for (int indexProvincia = 0; indexProvincia < habitantes.get(indexComunidad).size(); indexProvincia++) {			
+				System.out.print(nombresProvincias.get(indexComunidad).get(indexProvincia) + ":   \t");
+				int numHabitantes = habitantes.get(indexComunidad).get(indexProvincia);
+				subTotal += numHabitantes;
+				System.out.println(numHabitantes);
+					
+			}
+			System.out.println("TOTAL de habitantes de " + nombreComunidadesAutonomas[indexComunidad] + " = " + subTotal);
+			total += subTotal;
+			subTotal = 0;
+			System.out.println();
+		}
+		System.out.println("TOTAL de habitantes de España = " + total);
+	}
+	
+	
+	public void mostrarDatosComAutonomasProvinciasHabitantes2(HashMap<Integer,ArrayList<Integer>> habitantes, HashMap<Integer,ArrayList<String>> nombresProvincias, String[] nombreComunidadesAutonomas ) {
+		int subTotal = 0;
+		int total = 0;
+		
+		System.out.println("***************************************************");
+		System.out.println("******Comunidades Autónomas y sus Provincias*******");
+		System.out.println("***************************************************");
+		
+		for ( Integer indexComunidad : habitantes.keySet()) {
+			int indexProvincia =0;
+			System.out.println("----  " + nombreComunidadesAutonomas[indexComunidad] + "  ----");
+			ArrayList<Integer> provincias = habitantes.get(indexComunidad);
+			for (Integer cantidadHabitantes : provincias) {				
+				System.out.print(nombresProvincias.get(indexComunidad).get(indexProvincia) + ":   \t");
+				subTotal += cantidadHabitantes;
+				System.out.println(cantidadHabitantes);
+				indexProvincia++;
+			}
+			System.out.println("TOTAL de habitantes de " + nombreComunidadesAutonomas[indexComunidad] + " = " + subTotal);
+			total += subTotal;
+			subTotal = 0;
+			System.out.println();
+		}
+		
+		System.out.println("TOTAL de habitantes de España = " + total);
+	}
+	
+	
+	
+	//Leemos dos ficheros de textos llamados provincias.txt y comunidades.txt
+	//debemos sacar los datos de los habitantes empadronados de cada provincia pero
+	//agrupadas cada una por su comunidad autonoma, con el total de habitantes por
+	//Comunidad autonoma
+	public void leerFicheroTextoProvinciasComAutoYListarDatos() {
+		String[] comunidadesAutonomas = leerComunidadesAutonomasTxt();
+		String[] datosTodasLasProvincias = leerProvinciasTxt();
+		HashMap<Integer,ArrayList<Integer>> comunidadesProvinciasHabitantes = new HashMap<Integer,ArrayList<Integer>>();
+		for (int i = 0; i < comunidadesAutonomas.length; i++) {
+				ArrayList<Integer> listadoProvincias = new ArrayList<Integer>();
+				comunidadesProvinciasHabitantes.put(i, listadoProvincias);
+		}
+
+		//El siguiente HashMap llamado nombresProvincias almacena en su clave el indice de la comunidad
+		//y en el valor un ArrayList de String donde cada String es el nombre de a provincia
+		HashMap<Integer,ArrayList<String>> nombresProvincias = new HashMap<Integer,ArrayList<String>>();
+
+			//Recorremos el Array de String que nos devolvió el método leerProvinciasTxt()
+			
+			for (String datosUnaProvincia : datosTodasLasProvincias) {
+				String[] datosUnaProvinciaSeparados = datosUnaProvincia.split("%");				
+				int indiceComunidadAutonoma = Integer.parseInt(datosUnaProvinciaSeparados[2])-1;			
+				int habitantesUnaProvincia = Integer.parseInt(datosUnaProvinciaSeparados[3]);				
+				//añadimos un condicional que solo cree un ArrayList la primera vez
+				//cuando estamos en una comunidad autonoma y no nos cree ninguno mas
+				//cuando volvamos a tener que añadir datos a la misma comunidad autonoma.
+				if (nombresProvincias.get(indiceComunidadAutonoma) == null) {
+					ArrayList<String> provincias = new ArrayList<String>();
+					nombresProvincias.put(indiceComunidadAutonoma,provincias);
+				}
+				//añadimos al HashMap de provincias, el nombre que le corresponde en la comunidad atonoma
+				//a la que pertence.
+				nombresProvincias.get(indiceComunidadAutonoma).add(datosUnaProvinciaSeparados[1]);				
+				//añadimos el número de habitantes a la provincia en la comunidad autonoma que corresponde
+				comunidadesProvinciasHabitantes.get(indiceComunidadAutonoma).add(habitantesUnaProvincia);
+			}
+			
+		//mostrarDatosComAutonomasProvinciasHabitantes(comunidadesProvinciasHabitantes,nombresProvincias, comunidadesAutonomas);
+		mostrarDatosComAutonomasProvinciasHabitantes2(comunidadesProvinciasHabitantes,nombresProvincias, comunidadesAutonomas);
+		System.out.println("BreakPoint");
+		
+	}
+	
+	
+	public void mostrarDatosComAutonomasProvinciasHabitantes3( HashMap<Integer,ArrayList<String>> datosProvincias, String[] nombreComunidadesAutonomas ) {
+		int subTotal = 0;
+		int total = 0;
+		
+		System.out.println("***************************************************");
+		System.out.println("******Comunidades Autónomas y sus Provincias*******");
+		System.out.println("***************************************************");
+		
+		for ( Integer indexComunidad : datosProvincias.keySet()) {
+			@SuppressWarnings("unused")
+			int indexProvincia = 0;
+			System.out.println("\u001B[47m\u001B[32m----------   \t" + nombreComunidadesAutonomas[indexComunidad] + "   \t----------\u001b[0m");
+			ArrayList<String> provincias = datosProvincias.get(indexComunidad);
+			for (String datosProvinciaHabitantes : provincias) {
+				String[] datos = datosProvinciaHabitantes.split("%");
+				String nombreProvincia = datos[0];
+				int cantidadHabitantes = Integer.parseInt(datos[1]);
+				System.out.print(nombreProvincia + ":   \t");
+				subTotal += cantidadHabitantes;
+				System.out.println(cantidadHabitantes);
+				indexProvincia++;
+			}
+			
+			System.out.println("\u001B[36mTOTAL de habitantes de " + nombreComunidadesAutonomas[indexComunidad] + " = \u001B[41m\u001B[37m" + subTotal + "\u001b[0m");
+			total += subTotal;
+			subTotal = 0;
+			System.out.println();
+		}
+		
+		System.out.println("\u001B[33mTOTAL de habitantes de España = \u001b[0m" + total);
+
+	}
+	
+	
+	public void leerFicheroTextoProvinciasComAutoYListarDatos2() {
+		String[] comunidadesAutonomas = leerComunidadesAutonomasTxt();
+		String[] datosTodasLasProvincias = leerProvinciasTxt();
+		/*HashMap<Integer,ArrayList<Integer>> comunidadesProvinciasHabitantes = new HashMap<Integer,ArrayList<Integer>>();
+		for (int i = 0; i < comunidadesAutonomas.length; i++) {
+				ArrayList<Integer> listadoProvincias = new ArrayList<Integer>();
+				comunidadesProvinciasHabitantes.put(i, listadoProvincias);
+		}*/
+
+		//El siguiente HashMap llamado nombresProvincias almacena en su clave el indice de la comunidad
+		//y en el valor un ArrayList de String donde cada String es el nombre de a provincia
+		HashMap<Integer,ArrayList<String>> datosProvincias = new HashMap<Integer,ArrayList<String>>();
+
+			//Recorremos el Array de String que nos devolvió el método leerProvinciasTxt()
+			
+			for (String datosUnaProvincia : datosTodasLasProvincias) {
+				String[] datosUnaProvinciaSeparados = datosUnaProvincia.split("%");
+				String nombreProvincia = datosUnaProvinciaSeparados[1];
+				int indiceComunidadAutonoma = Integer.parseInt(datosUnaProvinciaSeparados[2])-1;			
+				int habitantesUnaProvincia = Integer.parseInt(datosUnaProvinciaSeparados[3]);				
+				//añadimos un condicional que solo cree un ArrayList la primera vez
+				//cuando estamos en una comunidad autonoma y no nos cree ninguno mas
+				//cuando volvamos a tener que añadir datos a la misma comunidad autonoma.
+				if (datosProvincias.get(indiceComunidadAutonoma) == null) {
+					ArrayList<String> provincias = new ArrayList<String>();
+					datosProvincias.put(indiceComunidadAutonoma,provincias);
+				}
+				//añadimos al HashMap de provincias, el nombre que le corresponde en la comunidad atonoma
+				//a la que pertence.
+				datosProvincias.get(indiceComunidadAutonoma).add(nombreProvincia + "%" + habitantesUnaProvincia);				
+				//añadimos el número de habitantes a la provincia en la comunidad autonoma que corresponde
+				//comunidadesProvinciasHabitantes.get(indiceComunidadAutonoma).add(habitantesUnaProvincia);
+			}
+			
+		mostrarDatosComAutonomasProvinciasHabitantes3(datosProvincias, comunidadesAutonomas);
+		System.out.println("BreakPoint");
+		
+	}
+	
 }
